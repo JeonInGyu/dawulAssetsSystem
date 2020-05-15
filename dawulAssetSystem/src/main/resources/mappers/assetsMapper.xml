@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.assets.mappers.assets">
+	
+	<!-- 게시물 총 개수 -->
+	<select id="pcTotalCount" resultType="int">
+ 		SELECT COUNT(SEQ) FROM tb_pc_status WHERE MAINCATE_PC_CODE = #{asideCateCode}
+	</select>
+	
+	<!-- 게시물 목록 + 페이징 -->
+	<select id="pcListPage" parameterType="hashMap" resultType="com.assets.domain.AssetsPcVO">
+		SELECT 
+			A.*, 
+			B.MAINCATE_PC_NAME, 
+			C.ASSETS_CODE, 
+			C.REGIST_FLAG, 
+			D.*, 
+			E.EMPLOYEE_CODE, 
+			F.NAME AS NAME1, 
+			F.POSITION AS POSITION1,
+			F.DEPARTMENT AS DEPARTMENT1, 
+			G.EMPLOYEE_CODE, 
+			H.NAME AS NAME2, 
+			H.POSITION AS POSITION2, 
+			H.DEPARTMENT AS DEPARTMENT2,
+			I.ASSETS_KINDS
+		FROM tb_pc_status A 
+			LEFT OUTER JOIN tb_pc_main_category B ON B.MAINCATE_PC_CODE = A.MAINCATE_PC_CODE 
+			LEFT OUTER JOIN tb_pc_status_regist C ON C.PC_CODE = A.PC_CODE 
+			LEFT OUTER JOIN tb_area_category D ON D.AREA_CODE = A.AREA_CODE 
+			LEFT OUTER JOIN tb_use_status E ON E.PC_CODE = A.PC_CODE 
+			LEFT OUTER JOIN tb_employee_status F ON F.EMPLOYEE_CODE = E.EMPLOYEE_CODE 
+			LEFT OUTER JOIN tb_use_status2 G ON G.PC_CODE = A.PC_CODE 
+			LEFT OUTER JOIN tb_employee_status H ON H.EMPLOYEE_CODE = G.EMPLOYEE_CODE
+			LEFT OUTER JOIN tb_assets_code I ON I.ASSETS_CODE = A.ASSETS_CODE
+		WHERE
+			B.MAINCATE_PC_CODE = #{asideCateCode}
+		ORDER BY SEQ DESC
+			LIMIT #{displayPost}, #{postNum}
+	</select>
+	
+	<!-- 메인카테고리 데이터 -->
+	<select id="pcMainCate" resultType="com.assets.domain.AssetsPcVO">
+		SELECT * FROM tb_pc_main_category
+	</select>
+	
+	<!-- 군 데이터 -->
+	<select id="pcAreaCate" resultType="com.assets.domain.AssetsPcVO">
+		SELECT * FROM tb_area_category
+	</select>
+	
+	<!-- 종류 데이터 -->
+	<select id="pcSubCate" resultType="com.assets.domain.AssetsPcVO">
+		SELECT * FROM 
+			tb_assets_code 
+		WHERE 
+			(ASSETS_GROUP_CODE='DEV' AND ASSETS_KINDS_CODE='D00' AND ASSETS_TYPE_CODE='101') OR 
+			(ASSETS_GROUP_CODE='DEV' AND ASSETS_KINDS_CODE='D19' AND ASSETS_TYPE_CODE='101') OR 
+			(ASSETS_GROUP_CODE='DEV' AND ASSETS_KINDS_CODE='D01' AND ASSETS_TYPE_CODE='101') OR 
+			(ASSETS_GROUP_CODE='DEV' AND ASSETS_KINDS_CODE='D27' AND ASSETS_TYPE_CODE='101') OR 
+			(ASSETS_GROUP_CODE='DEV' AND ASSETS_KINDS_CODE='D28') OR 
+			(ASSETS_GROUP_CODE='DEV' AND ASSETS_KINDS_CODE='D00') OR 
+			(ASSETS_GROUP_CODE='DEV' AND ASSETS_KINDS_CODE='D19' AND ASSETS_TYPE_CODE='104');
+	</select>
+		
+	<!-- PC 상세정보 개수 -->
+	<select id="PcDetailCount" parameterType="Map" resultType="com.assets.domain.AssetsPcVO">
+		SELECT
+			(
+				SELECT COUNT(*) FROM tb_pc_status A 
+				LEFT OUTER JOIN tb_pc_status_regist B ON A.PC_CODE = B.PC_CODE
+				WHERE MAINCATE_PC_CODE='1' AND FULL_TEXT LIKE '%%'
+			) as pcTotalCount,
+			(
+				SELECT COUNT(*) FROM tb_pc_status_regist A
+	        	LEFT OUTER JOIN tb_pc_status B ON A.PC_CODE = B.PC_CODE
+	        	WHERE A.REGIST_FLAG='T' AND B.MAINCATE_PC_CODE='1' AND FULL_TEXT LIKE '%%'
+	        ) as pcRTCount,
+        	(
+        		SELECT COUNT(*) FROM tb_pc_status_regist A
+	        	LEFT OUTER JOIN tb_pc_status B ON A.PC_CODE = B.PC_CODE
+	        	WHERE A.REGIST_FLAG='F' AND B.MAINCATE_PC_CODE='1' AND FULL_TEXT LIKE '%%'
+	        ) as pcRFCount,
+			(
+				SELECT COUNT(*) FROM tb_pc_status A
+	        	LEFT OUTER JOIN tb_pc_status_regist B ON A.PC_CODE = B.PC_CODE
+	        	WHERE SUB_CATEGORY='데스크탑' AND MAINCATE_PC_CODE='1' AND FULL_TEXT LIKE '%%'
+	        ) as pcDesktopCount,
+			(
+				SELECT COUNT(*) FROM tb_pc_status A
+	        	LEFT OUTER JOIN tb_pc_status_regist B ON A.PC_CODE = B.PC_CODE
+	        	WHERE SUB_CATEGORY='노트북' AND MAINCATE_PC_CODE='1' AND FULL_TEXT LIKE '%%'
+	        ) as pcNotebookCount
+	</select>
+		
+	<!-- PC 상세보기 -->
+	<select id="pcDetail" parameterType="Map" resultType="com.assets.domain.AssetsPcVO">
+		SELECT 
+			A.*, B.MAINCATE_PC_NAME, C.ASSETS_CODE, C.REGIST_FLAG, D.*, E.EMPLOYEE_CODE, F.NAME, F.POSITION ,F.DEPARTMENT FROM tb_pc_status A
+		LEFT OUTER JOIN tb_pc_main_category B ON B.MAINCATE_PC_CODE = A.MAINCATE_PC_CODE
+		LEFT OUTER JOIN tb_pc_status_regist C ON C.PC_CODE = A.PC_CODE
+		LEFT OUTER JOIN tb_area_category D ON D.AREA_CODE = A.AREA_CODE
+			<choose>
+				<when test="asideCateCode == 1">
+					LEFT OUTER JOIN tb_use_status E ON E.PC_CODE = A.PC_CODE
+				</when>
+				<otherwise>
+					LEFT OUTER JOIN tb_use_status2 E ON E.PC_CODE = A.PC_CODE
+				</otherwise>
+			</choose>
+		LEFT OUTER JOIN tb_employee_status F ON F.EMPLOYEE_CODE = E.EMPLOYEE_CODE
+		WHERE 
+			A.PC_CODE= #{pcCode}
+	</select>
+	
+	
+		
+</mapper>
