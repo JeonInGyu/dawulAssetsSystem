@@ -19,7 +19,6 @@
 	            mouseWheel:{scrollAmount:180}
 	        });
 	    });
-	    
     </script>
 	
 	<!-- 드롭다운 -->

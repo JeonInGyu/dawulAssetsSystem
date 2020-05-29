@@ -4,27 +4,26 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-	<title>다울 업무운영 장비관리시스템</title>
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/static/css/default.css" />">
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/static/css/layout.css" />">
-	
-	<link type="text/css" rel="stylesheet" href="<c:url value="/resources/static/plugin/jquery.mCustomScrollbar.css" />">
-	<script charset='UTF-8' src="<c:url value="/resources/static/plugin/jquery-1.12.2.js" />"></script>
-	<script charset='UTF-8' src="<c:url value="/resources/static/plugin/jquery.mCustomScrollbar.concat.min.js" />"></script>
-	
-	<script type="text/javascript">
-	    $(document).ready(function() {
-	        $(".scrollbar").mCustomScrollbar({
-	            scrollInertia:100,
-	            mouseWheel:{scrollAmount:180}
-	        });
-	    });
-	    
-    </script>
-	
-	<!-- 드롭다운 -->
-	<script charset='UTF-8' src="<c:url value="/resources/static/plugin/bootstrap.min.js" />"></script>
-	<!-- //드롭다운 -->
+<title>다울 업무운영 장비관리시스템</title>
+<link rel="stylesheet" type="text/css" href="<c:url value="/resources/static/css/default.css" />">
+<link rel="stylesheet" type="text/css" href="<c:url value="/resources/static/css/layout.css" />">
+
+<link type="text/css" rel="stylesheet" href="<c:url value="/resources/static/plugin/jquery.mCustomScrollbar.css" />">
+<script charset='UTF-8' src="<c:url value="/resources/static/plugin/jquery-1.12.2.js" />"></script>
+<script charset='UTF-8' src="<c:url value="/resources/static/plugin/jquery.mCustomScrollbar.concat.min.js" />"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".scrollbar").mCustomScrollbar({
+            scrollInertia:100,
+            mouseWheel:{scrollAmount:180}
+        });
+    });
+   </script>
+
+<!-- 드롭다운 -->
+<script charset='UTF-8' src="<c:url value="/resources/static/plugin/bootstrap.min.js" />"></script>
+<!-- //드롭다운 -->
 </head>
 <body style="overflow: hidden;">
 	<!-- wrap -->
@@ -34,7 +33,6 @@
             <div class="title">다울 업무운영 장비관리시스템</div>
             <div class="txt">아이디/비밀번호를 입력하세요.</div>
             <form id="login" name="login" action="/assets/main" method="post">
-            <!-- <form role="form" method="post" autocomplete="off" action="/assets/login"> -->
                 <ul class="account d_form clear">
                     <li>
                         <label for="">아이디 입력</label>
@@ -44,7 +42,6 @@
                         <label for="">비밀번호 입력</label>
                         <input type="password" id="pwd" name="pwd" value="" class="cl" placeholder="비밀번호" onkeydown="if(event.keyCode == 13){document.getElementById('login').submit();}">
                     </li>
-                    <!-- <li class="btn cm"><button type="submit">로그인</button></li> -->
                     <li class="btn cm"><a href="javascript:login.submit();" onclick=""><span>로그인</span></a></li>
                 </ul>
             </form>

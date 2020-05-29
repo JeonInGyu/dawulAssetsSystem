@@ -9,6 +9,16 @@
  		SELECT COUNT(SEQ) FROM tb_pc_status WHERE MAINCATE_PC_CODE = #{asideCateCode}
 	</select>
 	
+	<!-- 검색한 총 개수 -->
+	<select id="pcSearchCount" parameterType="hashMap" resultType="int">
+ 		SELECT 
+ 			COUNT(SEQ) 
+ 		FROM tb_pc_status A
+ 			LEFT OUTER JOIN tb_pc_status_regist B ON B.PC_CODE = A.PC_CODE	
+ 		WHERE 
+ 			A.MAINCATE_PC_CODE = #{asideCateCode} AND FULL_TEXT LIKE concat('%', #{searchWord} ,'%')
+	</select>
+	
 	<!-- 게시물 목록 + 페이징 -->
 	<select id="pcListPage" parameterType="hashMap" resultType="com.assets.domain.AssetsPcVO">
 		SELECT 
@@ -36,19 +46,33 @@
 			LEFT OUTER JOIN tb_employee_status H ON H.EMPLOYEE_CODE = G.EMPLOYEE_CODE
 			LEFT OUTER JOIN tb_assets_code I ON I.ASSETS_CODE = A.ASSETS_CODE
 		WHERE
-			B.MAINCATE_PC_CODE = #{asideCateCode}
+			B.MAINCATE_PC_CODE = #{asideCateCode} AND FULL_TEXT LIKE concat('%', #{searchWord} ,'%')
 		ORDER BY SEQ DESC
 			LIMIT #{displayPost}, #{postNum}
 	</select>
 	
 	<!-- 메인카테고리 데이터 -->
 	<select id="pcMainCate" resultType="com.assets.domain.AssetsPcVO">
-		SELECT * FROM tb_pc_main_category
+		SELECT 
+			* 
+		FROM 
+			tb_pc_main_category
 	</select>
 	
 	<!-- 군 데이터 -->
 	<select id="pcAreaCate" resultType="com.assets.domain.AssetsPcVO">
-		SELECT * FROM tb_area_category
+		SELECT 
+			* 
+		FROM 
+			tb_area_category
+	</select>
+	
+	<!-- 종류 데이터 -->
+	<select id="pcCodeList" resultType="String">
+		SELECT 
+			PC_CODE 
+		FROM 
+			tb_pc_status
 	</select>
 	
 	<!-- 종류 데이터 -->
@@ -67,38 +91,63 @@
 		
 	<!-- PC 상세정보 개수 -->
 	<select id="PcDetailCount" parameterType="Map" resultType="com.assets.domain.AssetsPcVO">
-		SELECT
-			(
-				SELECT COUNT(*) FROM tb_pc_status A 
-				LEFT OUTER JOIN tb_pc_status_regist B ON A.PC_CODE = B.PC_CODE
-				WHERE MAINCATE_PC_CODE='1' AND FULL_TEXT LIKE '%%'
-			) as pcTotalCount,
-			(
-				SELECT COUNT(*) FROM tb_pc_status_regist A
-	        	LEFT OUTER JOIN tb_pc_status B ON A.PC_CODE = B.PC_CODE
-	        	WHERE A.REGIST_FLAG='T' AND B.MAINCATE_PC_CODE='1' AND FULL_TEXT LIKE '%%'
-	        ) as pcRTCount,
-        	(
-        		SELECT COUNT(*) FROM tb_pc_status_regist A
-	        	LEFT OUTER JOIN tb_pc_status B ON A.PC_CODE = B.PC_CODE
-	        	WHERE A.REGIST_FLAG='F' AND B.MAINCATE_PC_CODE='1' AND FULL_TEXT LIKE '%%'
-	        ) as pcRFCount,
-			(
-				SELECT COUNT(*) FROM tb_pc_status A
-	        	LEFT OUTER JOIN tb_pc_status_regist B ON A.PC_CODE = B.PC_CODE
-	        	WHERE SUB_CATEGORY='데스크탑' AND MAINCATE_PC_CODE='1' AND FULL_TEXT LIKE '%%'
-	        ) as pcDesktopCount,
-			(
-				SELECT COUNT(*) FROM tb_pc_status A
-	        	LEFT OUTER JOIN tb_pc_status_regist B ON A.PC_CODE = B.PC_CODE
-	        	WHERE SUB_CATEGORY='노트북' AND MAINCATE_PC_CODE='1' AND FULL_TEXT LIKE '%%'
+		SELECT(
+				SELECT 
+					COUNT(*) 
+				FROM 
+					tb_pc_status A 
+				LEFT OUTER JOIN 
+					tb_pc_status_regist B ON A.PC_CODE = B.PC_CODE
+				WHERE 
+					MAINCATE_PC_CODE='1' 
+					AND FULL_TEXT LIKE concat('%', #{searchWord} ,'%')
+			) as pcTotalCount, (
+				SELECT 
+					COUNT(*) 
+				FROM 
+					tb_pc_status_regist A
+	        	LEFT OUTER JOIN 
+	        		tb_pc_status B ON A.PC_CODE = B.PC_CODE
+	        	WHERE A.REGIST_FLAG='T' 
+	        		AND B.MAINCATE_PC_CODE='1' 
+	        		AND FULL_TEXT LIKE concat('%', #{searchWord} ,'%')
+	        ) as pcRTCount, (
+        		SELECT 
+        			COUNT(*) 
+        		FROM 
+        			tb_pc_status_regist A
+	        	LEFT OUTER JOIN 
+	        		tb_pc_status B ON A.PC_CODE = B.PC_CODE
+	        	WHERE A.REGIST_FLAG='F' 
+	        		AND B.MAINCATE_PC_CODE='1' 
+	        		AND FULL_TEXT LIKE concat('%', #{searchWord} ,'%')
+	        ) as pcRFCount, (
+				SELECT 
+					COUNT(*) 
+				FROM 
+					tb_pc_status A
+	        	LEFT OUTER JOIN 
+	        		tb_pc_status_regist B ON A.PC_CODE = B.PC_CODE
+	        	WHERE SUB_CATEGORY='데스크탑' 
+	        		AND MAINCATE_PC_CODE='1' 
+	        		AND FULL_TEXT LIKE concat('%', #{searchWord} ,'%')
+	        ) as pcDesktopCount, (
+				SELECT 
+					COUNT(*) 
+				FROM 
+					tb_pc_status A
+	        	LEFT OUTER JOIN 
+	        		tb_pc_status_regist B ON A.PC_CODE = B.PC_CODE
+	        	WHERE SUB_CATEGORY='노트북' 
+	        	AND MAINCATE_PC_CODE='1' 
+	        	AND FULL_TEXT LIKE concat('%', #{searchWord} ,'%')
 	        ) as pcNotebookCount
 	</select>
 		
 	<!-- PC 상세보기 -->
 	<select id="pcDetail" parameterType="Map" resultType="com.assets.domain.AssetsPcVO">
 		SELECT 
-			A.*, B.MAINCATE_PC_NAME, C.ASSETS_CODE, C.REGIST_FLAG, D.*, E.EMPLOYEE_CODE, F.NAME, F.POSITION ,F.DEPARTMENT FROM tb_pc_status A
+			A.*, B.MAINCATE_PC_NAME, C.ASSETS_CODE, C.REGIST_FLAG, D.*, E.EMPLOYEE_CODE, F.NAME, F.POSITION ,F.DEPARTMENT ,G.* FROM tb_pc_status A
 		LEFT OUTER JOIN tb_pc_main_category B ON B.MAINCATE_PC_CODE = A.MAINCATE_PC_CODE
 		LEFT OUTER JOIN tb_pc_status_regist C ON C.PC_CODE = A.PC_CODE
 		LEFT OUTER JOIN tb_area_category D ON D.AREA_CODE = A.AREA_CODE
@@ -111,10 +160,37 @@
 				</otherwise>
 			</choose>
 		LEFT OUTER JOIN tb_employee_status F ON F.EMPLOYEE_CODE = E.EMPLOYEE_CODE
+		LEFT OUTER JOIN tb_assets_code G ON G.ASSETS_CODE = A.ASSETS_CODE
 		WHERE 
 			A.PC_CODE= #{pcCode}
 	</select>
 	
+	<!-- 게시물 멀티 삭제 -->
+	<delete id="pcDelete" parameterType="String">
+	 	DELETE FROM 
+	 		tb_pc_status 
+	 	WHERE 
+	 		pc_code = #{pcCode}
+	</delete>
 	
-		
+	<!-- 게시물 삭제 -->
+	<delete id="pcMultiDelete" parameterType="String">
+	 	DELETE FROM 
+	 		tb_pc_status 
+	 	WHERE 
+	 		PC_CODE IN ( #{pcCode} )
+	</delete>
+	
+	<!-- PC정보 등록 -->
+	<insert id="pcInsert" parameterType="com.assets.domain.AssetsPcVO">
+		INSERT INTO tb_pc_status(PC_CODE, MAINCATE_PC_CODE, SUB_CATEGORY, CPU, MEMORY, MAINBOARD, VIDEOCARD, HARDDISK, DISKVOLUME, PURCHASE_SPACE, PURCHASE_DATE, DISPOSAL_DATE, MEMO, AREA_CODE, REAL_COUNT, REAL_COUNT_FLAG, USER_NAME, USER_DEPT, USER_MAC, ASSETS_CODE, MODEL_NAME)
+		VALUES (#{pc_code},#{maincate_pc_code},#{assets_kinds},#{cpu},#{memory},#{mainBoard},#{videoCard},#{hardDisk},#{diskVolume},#{purchase_Space},#{purchase_Data},#{disposal_Data},#{memo},#{area_Code},#{real_Count},#{real_Count_Flag},#{user_Name},#{user_Dept},#{user_Mac},#{assets_Code},#{model_Name})
+	</insert>
+	
+	<!-- PC 사용현황 정보 등록 -->
+	<insert id="pcRegistInsert" parameterType="com.assets.domain.AssetsPcVO">
+		INSERT INTO tb_pc_status_regist(PC_CODE, ASSETS_CODE, REGIST_FLAG, RENTAL_FLAG, FULL_TEXT, USE_FULL_TEXT)
+		VALUES (#{pc_code}, #{assets_Code}, #{regist_Flag}, #{rental_Flag}, #{full_text}, #{use_full_text})
+	</insert>
+	
 </mapper>

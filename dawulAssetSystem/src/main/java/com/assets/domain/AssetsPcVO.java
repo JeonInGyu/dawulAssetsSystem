@@ -19,9 +19,11 @@ public class AssetsPcVO {
 	private int area_Code;
 	private String area_name;
 	private String useRentalFlag;
-	private String registFlag;
-	private String real_Count;
+	private String regist_Flag;
+	private int real_Count;
 	private String real_Count_Flag;
+	private String user_Name;
+	private String user_Dept;
 	private String user_Mac;
 	private String assets_Code;
 	private String model_Name;
@@ -40,6 +42,9 @@ public class AssetsPcVO {
 	private String department2;
 	
 	private String assets_kinds;
+	private String full_text;
+	private String use_full_text;
+	private String rental_Flag;
 	
 	public int getSeq() {
 		return seq;
@@ -137,10 +142,10 @@ public class AssetsPcVO {
 	public void setUseRentalFlag(String useRentalFlag) {
 		this.useRentalFlag = useRentalFlag;
 	}
-	public String getReal_Count() {
+	public int getReal_Count() {
 		return real_Count;
 	}
-	public void setReal_Count(String real_Count) {
+	public void setReal_Count(int real_Count) {
 		this.real_Count = real_Count;
 	}
 	public String getReal_Count_Flag() {
@@ -209,11 +214,11 @@ public class AssetsPcVO {
 	public void setArea_name(String area_name) {
 		this.area_name = area_name;
 	}
-	public String getRegistFlag() {
-		return registFlag;
+	public String getRegist_Flag() {
+		return regist_Flag;
 	}
-	public void setRegistFlag(String registFlag) {
-		this.registFlag = registFlag;
+	public void setRegist_Flag(String regist_Flag) {
+		this.regist_Flag = regist_Flag;
 	}
 	public String getName1() {
 		return name1;
@@ -256,6 +261,36 @@ public class AssetsPcVO {
 	}
 	public void setAssets_kinds(String assets_kinds) {
 		this.assets_kinds = assets_kinds;
+	}
+	public String getUser_Name() {
+		return user_Name;
+	}
+	public void setUser_Name(String user_Name) {
+		this.user_Name = user_Name;
+	}
+	public String getUser_Dept() {
+		return user_Dept;
+	}
+	public void setUser_Dept(String user_Dept) {
+		this.user_Dept = user_Dept;
+	}
+	public String getFull_text() {
+		return full_text;
+	}
+	public void setFull_text(String full_text) {
+		this.full_text = full_text;
+	}
+	public String getRental_Flag() {
+		return rental_Flag;
+	}
+	public void setRental_Flag(String rental_Flag) {
+		this.rental_Flag = rental_Flag;
+	}
+	public String getUse_full_text() {
+		return use_full_text;
+	}
+	public void setUse_full_text(String use_full_text) {
+		this.use_full_text = use_full_text;
 	}
 	
 }

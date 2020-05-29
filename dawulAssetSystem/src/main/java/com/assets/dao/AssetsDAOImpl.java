@@ -27,14 +27,15 @@ public class AssetsDAOImpl implements AssetsDAO {
 	}
 
 	@Override
-	public List<AssetsPcVO> pcListPage(int displayPost, int postNum, int asideCateCode) throws Exception {
+	public List<AssetsPcVO> pcListPage(int displayPost, int postNum, int asideCateCode, String searchWord) throws Exception {
 		// TODO Auto-generated method stub
-		 HashMap<String, Integer> data = new HashMap<String, Integer>();
+		 HashMap<String, Object> data = new HashMap<String, Object>();
 		  
 		 data.put("displayPost", displayPost);
 		 data.put("postNum", postNum);
 		 data.put("asideCateCode", asideCateCode);
-		  
+		 data.put("searchWord", searchWord); 
+		 
 		 return sql.selectList(namespace + ".pcListPage", data);
 	}
 
@@ -76,6 +77,49 @@ public class AssetsDAOImpl implements AssetsDAO {
 	public List<AssetsPcVO> getPcSubCateData() throws Exception {
 		// TODO Auto-generated method stub
 		return sql.selectList(namespace + ".pcSubCate");
+	}
+
+	@Override
+	public int getPcSearchcount(int asideCateCode, String searchWord) throws Exception {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> data = new HashMap<String, Object>();
+		  
+		 data.put("asideCateCode", asideCateCode);
+		 data.put("searchWord", searchWord);
+		
+		return sql.selectOne(namespace + ".pcSearchCount", data); 
+	}
+
+	@Override
+	public void getPcDelete(String pcCode) throws Exception {
+		// TODO Auto-generated method stub
+		sql.delete(namespace + ".pcDelete", pcCode);
+	}
+
+	@Override
+	public void postPcInsert(AssetsPcVO vo) throws Exception {
+		// TODO Auto-generated method stub
+		
+		sql.insert(namespace + ".pcInsert", vo);
+	}
+
+	@Override
+	public List<String> getPcCodeList() throws Exception {
+		// TODO Auto-generated method stub
+		return sql.selectList(namespace + ".pcCodeList");
+	}
+
+	@Override
+	public void postPcRegistInsert(AssetsPcVO vo) throws Exception {
+		// TODO Auto-generated method stub
+		sql.insert(namespace + ".pcRegistInsert", vo);
+	}
+
+	@Override
+	public void getPcMultiDelete(String pcCode) throws Exception {
+		// TODO Auto-generated method stub
+		
+		sql.delete(namespace + ".pcMultiDelete", pcCode);
 	}
 
 }

@@ -18,7 +18,37 @@
 	            scrollInertia:100,
 	            mouseWheel:{scrollAmount:180}
 	        });
+				  
+	        checked();
 	    });
+	    
+	    function search(asideCateCode){
+	    	var searchWord = document.getElementById("searchWord").value;
+	    	
+	    	location.href = "/assets/pcSearchList?" + "&asideCateCode=" + asideCateCode + "&pageNo=1&searchWord=" + searchWord;				    	
+	    }
+	    
+	    /* 체크박스 전체선택, 전체해제 */
+	    function checkBoxAll(){
+	          if( $("#th_checkAll").is(':checked') ){
+	            $("input[name=pcCheckBox]").prop("checked", true);
+	          }else{
+	            $("input[name=pcCheckBox]").prop("checked", false);
+	          }
+	    }
+
+	    function checked(){
+	        $('.checks').click(function(event) {
+	            var children = $(this).children().attr('id');
+	            
+	            if($("#" + children).is(":checked")){
+	            	$("#" + children).prop("checked", false);
+	            }else{
+	            	$("#" + children).prop("checked", true);
+	            }
+	        });
+	    }
+	    
     </script>
 	
 	<!-- 드롭다운 -->
@@ -40,32 +70,7 @@
     	
     	<!-- section -->
 	    <section>
-	    	<div>
-		    	<div class="dropdown left">
-		    		<div onclick="" class="drop_btn cl" data-toggle="dropdown" tabindex="0"><span class="txt">자산 현황</span><span class="caret"></span></div>
-		    		<div class="dropdown-menu">
-						<ul>
-							<li><a href="../../authUse/use.jsp?asideCateCode=1&pageNo=1" onclick="">사용 현황</a></li>
-                       		<li><a href="../assetsPc/pc.jsp?asideCateCode=0&pageNo=1" onclick="">자산 현황</a></li>
-                       		<li><a href="../../authRental/authRentalStatus/rental.jsp?pageNo=1" onclick="">출납 현황</a></li>
-						</ul>	    		
-		    		</div>
-		    	</div>
-		    	<div class="pipe"></div>
-		    	<div class="dropdown left2">
-		             <div class="drop_btn cl" data-toggle="dropdown" tabindex="0"><span class="txt">PC 현황</span><span class="caret"></span></div>
-		             <div class="dropdown-menu">
-		                 <ul>
-		                   	<li><a href="../assetsPc/pc.jsp?asideCateCode=0&pageNo=1" onclick="">PC 현황</a></li>
-		                     <li><a href="../assetsEmployee/employee.jsp?asideCateCode=0&pageNo=1" onclick="">직원 현황</a></li>
-		                     <li><a href="../assetsIp/ip.jsp" onclick="">IP 현황</a></li>
-		                     <li><a href="../assetsEquipment/equipment.jsp?asideCateCode=0&pageNo=1" onclick="">장비 현황</a></li>
-		                     <li><a href="../assetsSoftware/software.jsp?asideCateCode=0&pageNo=1" onclick="">소프트웨어 현황</a></li>
-		                 	<li><a href="../authRentalManager/rentalEquipmentMng.jsp?pageNo=1" onclick="">장비 출납 관리</a></li>
-		                 </ul>
-		             </div>
-		         </div>
-	       	</div>
+	    	<jsp:include page="../../include/header2.jsp" flush="false"/>     
 	         
 	        <!-- title -->
 	        <c:forEach items="${pcMainCateList}" var="pcMainCateList">
@@ -84,6 +89,7 @@
 		        </div>
 	        </c:forEach>
 	        <!-- //장비 사용 현황 -->
+	        
             <div class="guide">
                 <div class="dropdown4">
                     <div class="drop_btn" data-toggle="dropdown"></div>
@@ -107,12 +113,12 @@
                 <!-- //select -->
                 <!-- input -->
                 <div class="fl d_form">
-                    <form id="pcSearch" name="pcSearch" action="" method="post">
+                    <form id="pcSearchList" name="pcSearchList" action="" method="get">
                         <fieldset>
                             <legend>검색</legend>
                             <label for="">검색어 입력</label>
-                    		<input type="text" id="" name="" class="cl" value="" placeholder="검색어를 입력하세요." onkeydown="javascript:if(event.keyCode==13)form.submit();">
-                    		<button type="button" onclick=""></button>
+                    		<input type="text" id="searchWord" name="searchWord" class="cl" value="${searchWord}" placeholder="검색어를 입력하세요." onkeydown="javascript:if(event.keyCode==13)form.submit();">
+                    		<button type="button" onclick="search(${asideCateCode});"></button>
                         </fieldset>
                     </form>
                 </div>
@@ -122,9 +128,9 @@
 	         
 	        <div class="btn">
 	         	<ul class="clear">
-	         		<li class="btn_A cm" onclick="location.href = ''">추가</li>
+	         		<li class="btn_A cm" onclick="location.href = '/assets/pcInsertList'">추가</li>
                     <li class="blank"></li>
-                    <li class="btn_B cm" onclick="">삭제</li>
+                    <li class="btn_B cm" onclick="document.getElementById('pcMultiDelete').submit();">삭제</li>
                    	<li class="blank"></li>
                    	<li class="btn_E cm" onclick="location.href = '">엑셀</li>
                     <li class="blank"></li>
@@ -136,7 +142,7 @@
 	         
 	         	 <!-- table --> 
 	         	 <div class="border">
-					<form id="pcDelete" name="pcDelete" action="" method="post">
+					<form id="pcMultiDelete" name="pcMultiDelete" action="/assets/pcMultiDelete" method="post">
 						<table class="type">
 							<caption></caption>
 							<colgroup>
@@ -164,12 +170,13 @@
 	                            	<th scope="col" class="cursor"><span>비디오카드</span><i class="t"></i></th>
 	                            	<th scope="col" class="cursor"><span>모델명</span><i class="t"></i></th>
 	                            	<th scope="col" class="cursor"><span>등록여부</span><i class="t"></i></th>
-	                            	<th scope="col" class="check"><span>삭제</span></th>
+	                            	<!-- <th scope="col" class="check"><span>삭제</span></th> -->
+	                            	<th scope="col" class="check"><input type="checkbox" name="checkAll" id="th_checkAll" onclick="checkBoxAll()"/></th>
 	                            </tr>
 	                        </thead>
 							<tbody>
 								<c:forEach items="${pcList}" var="pcList"  varStatus="status">
-									<tr onclick="location.href = '/assets/pcDetail?pcCode=${pcList.pc_code}&asideCateCode=${asideCateCode}'" style="cursor: pointer;">
+									<tr onclick="location.href = '/assets/pcDetail?pcCode=${pcList.pc_code}&asideCateCode=${asideCateCode}&regist_Flag=${pcList.regist_Flag}'" style="cursor: pointer;">
 										<td><span>${status.index + 1}</span></td>
 										<td><span>${pcList.pc_code}</span></td>
 										<td><span>${pcList.area_name}</span></td>
@@ -180,23 +187,27 @@
 										<td><span>${pcList.videoCard}</span></td>
 										<td><span>${pcList.model_Name}</span></td>
 										<c:choose> 
-		        							<c:when test="${pcList.registFlag == T && pcList.department1 != null && pcList.position1 != null}" >
+		        							<c:when test="${pcList.regist_Flag == 'T' && pcList.department1 != null && pcList.position1 != null}" >
 												<td><span class="color2">사용 / ${pcList.department1} ${pcList.position1} ${pcList.name1}<br></span></td>
+												<td><div class="checks"></div></td>
 											</c:when>
-											<c:when test="${pcList.registFlag == T && pcList.department1 != null}" >
+											<c:when test="${pcList.regist_Flag == 'T' && pcList.department1 != null}" >
 												<td><span class="color2">사용 / ${pcList.department1}<br></span></td>
+												<td><div class="checks"></div></td>
 											</c:when>
-											<c:when test="${pcList.registFlag == T && pcList.department2 != null && pcList.position2 != null}" >
+											<c:when test="${pcList.regist_Flag == 'T' && pcList.department2 != null && pcList.position2 != null}" >
 												<td><span class="color2">사용 / ${pcList.department2} ${pcList.position2} ${pcList.name2}<br></span></td>
+												<td><div class="checks"></div></td>
 											</c:when>
-											<c:when test="${pcList.registFlag == T && pcList.department2 != null}" >
+											<c:when test="${pcList.regist_Flag == 'T' && pcList.department2 != null}" >
 												<td><span class="color2">사용 / ${pcList.department2}<br></span></td>
+												<td><div class="checks"></div></td>
 											</c:when>
 											<c:otherwise>
 												<td><span class="color">미사용</span></td>
+												<td onclick="event.cancelBubble = true;"><div class="checks"><input id="checkbox${status.index}" type="checkbox" name="pcCheckBox" value="${pcList.pc_code}"><label></label></div></td>
 											</c:otherwise>
 										</c:choose>
-									<td onclick="event.cancelBubble = true;"><div class="checks"><input id="" type="checkbox" name="pcCheckBox" value=""><label></label></div></td>
 								</tr>
 								</c:forEach>
 							</tbody>

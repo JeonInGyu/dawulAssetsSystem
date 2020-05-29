@@ -41,7 +41,7 @@
                 	<li class="admin ico2"><a href="admin/admin.jsp?pageNo=1" onclick=""></a></li>
                  </c:when>
                  <c:otherwise>
-        			<li class="admin ico2"><a href="./login/myStatusInfo.jsp" onclick=""></a></li>
+        			<li class="admin ico2"><a href="" onclick=""></a></li>
         		  </c:otherwise>
         		</c:choose>
             </ul>
@@ -60,21 +60,21 @@
                 <p class="txt">Usage Status</p>
                 <p class="txt2">사용 현황</p>
                 <span class="line"></span>
-                <span id="useStatusIndex" class="btn cm"><a id="useStatusIndexLink" href="./authUse/use.jsp?asideCateCode=1&pageNo=1" onclick=""><span>바로가기</span></a></span>
+                <span id="useStatusIndex" class="btn cm"><a id="useStatusIndexLink" href="" onclick=""><span>바로가기</span></a></span>
             </li>
             <li>
                 <span class="ico assets"></span>
                 <p class="txt">Asset Status</p>
                 <p class="txt2">자산 현황</p>
                 <span class="line"></span>
-                <span id="assetsStatusIndex" class="btn cm"><a id="assetsStatusIndexLink" href="/assets/pcList?asideCateCode=1&pageNo=1&searchWord=" onclick=""><span>바로가기</span></a></span>
+                <span id="assetsStatusIndex" class="btn cm"><a id="assetsStatusIndexLink" href="/assets/pcList?pageNo=1&asideCateCode=1&searchWord=" onclick=""><span>바로가기</span></a></span>
             </li>
             <li>
                 <span class="ico cashier"></span>
                 <p class="txt">Cashier Status</p>
                 <p class="txt2">출납 현황</p>
                 <span class="line"></span>
-                <span id="rentalStatusIndex" class="btn cm"><a id="rentalStatusIndexLink" href="./authRental/authRentalStatus/rental.jsp?pageNo=1" onclick=""><span>바로가기</span></a></span>
+                <span id="rentalStatusIndex" class="btn cm"><a id="rentalStatusIndexLink" href="" onclick=""><span>바로가기</span></a></span>
             </li>
         </ul>
         	
